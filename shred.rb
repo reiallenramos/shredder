@@ -30,8 +30,7 @@ class Shredder
   end
 
 end
-
-input_image = Image.read('rap.jpg').first
+input_image = Image.read(ARGV[0]).first
 shred = Shredder.new(input_image)
 
 shredded_pieces = shred.shred(10)
