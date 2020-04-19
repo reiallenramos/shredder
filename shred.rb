@@ -5,7 +5,7 @@ include Magick
 # usage:
 # ruby shred.rb <path_to_file> <no of iterations>
 # example:
-# ruby shred.rb ./images/my_image.jpg 1
+# ruby shred.rb my_image.jpg 1
 
 class Shredder
   attr_accessor :input, :pieces, :input_width, :input_height, :thickness
@@ -60,9 +60,14 @@ class Shredder
 end
 
 input_image = Image.read(ARGV[0]).first
+filename = input_image.filename.split('.')[0]
 iterations = ARGV[1].to_i
-columns = 100
+columns = 216
 iterations.times do |index|
+  unless index == 0
+    input_image = Image.read("#{filename}_#{index}_iterations.jpg").first
+  end
+
   shred = Shredder.new(input_image)
   first_shred_pieces = shred.shred(input_image, columns)
   first_stitch = shred.stitch(first_shred_pieces)
@@ -71,9 +76,7 @@ iterations.times do |index|
   second_stitch = shred.stitch(second_shred_pieces)
 
   final = second_stitch.rotate(-90)
-  filename = input_image.filename.split('/').last
-  new_filename = filename.split('.')[0]
-  final.write("#{new_filename}_#{iterations + index}_iterations.jpg")
+  final.write("#{filename}_#{index + 1}_iterations.jpg")
 end
 
 puts 'done!'
